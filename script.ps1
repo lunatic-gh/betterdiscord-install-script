@@ -11,6 +11,5 @@ pnpm inject
 # Go back into initial directory
 Set-Location $SCRIPT_DIR
 # Start (or restart) Discord with BD
-
 Stop-Process -Name "Discord" -ErrorAction Ignore
 Start-Process -FilePath "$Env:HOMEPATH\AppData\Local\Discord\Update.exe" -ArgumentList "--processStart", "Discord.exe"
