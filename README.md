@@ -9,3 +9,7 @@ restart the commandline to update the environment<br>
 
 ### Note: Due to windows being ass, you will need to modify script execution policies to even run your own fucking scripts. You can allow them by running the following command in an administrator powershell:
 `Set-ExecutionPolicy unrestricted`
+### Afterwards, just run the following:
+```powershell
+curl "https://raw.githubusercontent.com/lunatic-gh/betterdiscord-install-script/main/script.ps1" | iex
+```
