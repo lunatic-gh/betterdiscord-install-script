@@ -1,15 +1,22 @@
-$SCRIPT_DIR = "$( Get-Location )"
-$BD_DIR = "$Env:TEMP\$((Get-Random).ToString())"
-# Download BD Source
-git clone "https://github.com/BetterDiscord/BetterDiscord" "$BD_DIR"
-# Go into BD Source Folder
-Set-Location "$BD_DIR"
-# Install & Build BD
-pnpm install; pnpm build
-# Inject BD into the discord installation
+# Remove Existing Build Files if they exist
+Remove-Item C:\BetterDiscordBuildFiles\ -Recurse -Force -ErrorAction SilentlyContinue
+# Download latest Build Files
+git clone https://github.com/BetterDiscord/BetterDiscord.git "C:\BetterDiscordBuildFiles"
+# Go into Build Directory
+Set-Location -Path "C:\BetterDiscordBuildFiles"
+# Install Dependencies
+pnpm install
+# Build BetterDiscord
+pnpm build
+# Inject BetterDiscord into Discord App
 pnpm inject
-# Go back into initial directory
-Set-Location $SCRIPT_DIR
-# Start (or restart) Discord with BD
-Stop-Process -Name "Discord" -ErrorAction Ignore
-Start-Process -FilePath "$Env:HOMEPATH\AppData\Local\Discord\Update.exe" -ArgumentList "--processStart", "Discord.exe"
+# Close Discord if it is already Running
+Stop-Process -Name "Discord" -ErrorAction SilentlyContinue
+# Find Discord Installation Folder (Discord\app-***\)
+$DISCORD_PATH = "$env:HOMEPATH\AppData\Local\Discord"
+$INSTALL_DIRS = Get-ChildItem -Path $DISCORD_PATH -Directory | Where-Object { $_.Name -like "app-*" }
+$FINAL_INSTALL_DIR = $INSTALL_DIRS | Sort-Object { $version } -Descending | Select-Object -First 1
+# Start Discord
+Start-Process "$DISCORD_PATH\$FINAL_INSTALL_DIR\Discord.exe"
+# Go into the initial directory where the script has been executed from.
+Set-Location -Path $PSScriptRoot
