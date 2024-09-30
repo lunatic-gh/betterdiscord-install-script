@@ -12,15 +12,5 @@ pnpm build
 pnpm inject
 # Close Discord if it is already Running
 Stop-Process -Name "Discord" -ErrorAction SilentlyContinue
-# Find Discord Installation Folder (Discord\app-***\)
-$DISCORD_PATH = "$env:HOMEPATH\AppData\Local\Discord"
-$INSTALL_DIRS = Get-ChildItem -Path $DISCORD_PATH -Directory | Where-Object { $_.Name -like "app-*" }
-$FINAL_INSTALL_DIR = $INSTALL_DIRS | Sort-Object { $version } -Descending | Select-Object -First 1
-# Start Discord
-$process = "$DISCORD_PATH\$FINAL_INSTALL_DIR\Discord.exe"
-$job = Start-Job -ScriptBlock { Start-Process -FilePath $using:process -NoNewWindow -PassThru }
-Wait-Job -Job $job
-$jobResult = Receive-Job -Job $job
-Remove-Job -Job $job
 # Go into the initial directory where the script has been executed from.
 Set-Location -Path $PSScriptRoot
